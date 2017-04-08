@@ -100,6 +100,11 @@ func NewSMTPClient(conf *SMTPConfig) SMTPClient {
 	}
 }
 
+// NewMail returns a new Mail
+func (c *SMTPClient) NewMail() Mail {
+	return NewMail()
+}
+
 // Send - It can be used for generic SMTP stuff
 func (c *SMTPClient) Send(m Mail) error {
 	length := 0
