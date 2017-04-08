@@ -24,8 +24,8 @@ func main() {
   }
   c := mail.NewSMTPClient(conf)
   m := mail.NewMail()
-  m.AddTo("hello@admpub.com") //或 "Mr.Hello <hello@admpub.com>"
-  m.AddFrom("hank@admpub.com") //或 "Mr.Hank <hank@admpub.com>"
+  m.AddTo("hello@admpub.com") //或 "老弟 <hello@admpub.com>"
+  m.AddFrom("hank@admpub.com") //或 "老哥 <hank@admpub.com>"
   m.AddSubject("Testing")
   m.AddText("Some text :)")
   filepath, _ := os.Getwd()
