@@ -67,21 +67,32 @@ type SMTPConfig struct {
 	Identity string
 }
 
-func NewSMTPClient(conf *SMTPConfig) SMTPClient {
+func (s *SMTPConfig) Address() string {
+	if s.Port == 0 {
+		s.Port = 25
+	}
+	return s.Host + `:` + strconv.Itoa(s.Port)
+}
+
+func (s *SMTPConfig) Auth() smtp.Auth {
 	var auth smtp.Auth
-	conf.Secure = strings.ToUpper(conf.Secure)
-	switch conf.Secure {
+	s.Secure = strings.ToUpper(s.Secure)
+	switch s.Secure {
 	case "NONE":
-		auth = unencryptedAuth{smtp.PlainAuth(conf.Identity, conf.Username, conf.Password, conf.Host)}
+		auth = unencryptedAuth{smtp.PlainAuth(s.Identity, s.Username, s.Password, s.Host)}
 	case "LOGIN":
-		auth = LoginAuth(conf.Username, conf.Password)
+		auth = LoginAuth(s.Username, s.Password)
 	case "SSL":
 		fallthrough
 	default:
-		auth = smtp.PlainAuth(conf.Identity, conf.Username, conf.Password, conf.Host)
+		auth = smtp.PlainAuth(s.Identity, s.Username, s.Password, s.Host)
 	}
+	return auth
+}
+
+func NewSMTPClient(conf *SMTPConfig) SMTPClient {
 	return SMTPClient{
-		smtpAuth: auth,
+		smtpAuth: conf.Auth(),
 		host:     conf.Host,
 		port:     strconv.Itoa(conf.Port),
 		user:     conf.Username,
